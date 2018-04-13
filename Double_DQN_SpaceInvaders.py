@@ -358,7 +358,7 @@ class DQN_Agent():
                             action_cont=0
                         average_loss.append(loss)
                         
-                        if num_steps % 199 ==0:
+                        if num_steps % 30 ==0:
                             cpy_ave_loss = sum(average_loss) / float(len(average_loss))
                             print("Average loss:",cpy_ave_loss)                    
                             average_loss=[]
