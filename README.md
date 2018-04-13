@@ -16,7 +16,7 @@ To test the trained agent, execute
 
 For example
 
-python3 Double_DQN_SpaceInvaders.py --env='SpaceInvaders-v0' --render=1 --train=0 --model='save/SpaceInvaders-v0_394best.h5'
+```python3 Double_DQN_SpaceInvaders.py --env='SpaceInvaders-v0' --render=1 --train=0 --model='save/SpaceInvaders-v0_394best.h5'```
 
 
 
