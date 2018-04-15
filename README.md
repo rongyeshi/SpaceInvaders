@@ -26,5 +26,5 @@ For example
 
 Post-Trained SpaceInvaders
 
-[![SI](https://img.youtube.com/vi/D-txu9_PCTk/0.jpg)](https://youtu.be/D-txu9_PCTk "Post Trained SpaceInvaders - Click to Watch!")
 
+![animation](./video/spaceinvader.gif)
