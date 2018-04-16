@@ -14,23 +14,17 @@ import random
 import cv2
 
 
-Learning_rate = 0.00001#1e-4
+Learning_rate = 0.00001
 Gama_glob =0.99
-Targ_Update = 10000#300#150#50#250#1000
+Targ_Update = 10000
 
 input_dim =84
 MINIBATCH = 32
 
 class QNetwork():
 
-    # This class essentially defines the network architecture. 
-    # The network should take in state of the world as an input, 
-    # and output Q values of the actions available to the agent as the output. 
-
     def __init__(self, environment_name):
-        # Define your network architecture here. It is also a good idea to define any training operations 
-        # and optimizers here, initialize your variables, or alternately compile your model here.  
-        #pass
+        
         self.env = gym.make(environment_name)
         self.Num_input = len(self.env.observation_space.high)
         self.Num_output = self.env.action_space.__dict__['n']#get the number of action
@@ -114,24 +108,15 @@ class QNetwork():
 class Replay_Memory():
     
     def __init__(self, memory_size=110000, burn_in=30000):
-    
-        # The memory essentially stores transitions recorder from the agent
-        # taking actions in the environment.
-
-        # Burn in episodes define the number of episodes that are written into the memory from the 
-        # randomly initialized agent. Memory size is the maximum size after which old elements in the memory are replaced. 
-        # A simple (if not the most efficient) was to implement the memory is as a list of transitions. 
         self.memory_size = memory_size
         self.memory = []
         self.burn_in = burn_in
 
     def sample_batch(self, batch_size=32):
-        # This function returns a batch of randomly sampled transitions - i.e. state, action, reward, next state, terminal flag tuples. 
         minibatch = random.sample(self.memory, batch_size)
         return minibatch
 
-    def append(self, transition):
-        # Appends transition to the memory. 	
+    def append(self, transition):	
         self.memory.append(transition)
         if len(self.memory) > self.memory_size:
             self.memory=self.memory[1:]
@@ -140,14 +125,7 @@ class Replay_Memory():
 
 
 class DQN_Agent():
-    # In this class, we will implement functions to do the following. 
-    # (1) Create an instance of the Q Network class.
-    # (2) Create a function that constructs a policy from the Q values predicted by the Q Network. 
-    #		(a) Epsilon Greedy Policy.
-    # 		(b) Greedy Policy. 
-    # (3) Create a function to train the Q Network, by interacting with the environment.
-    # (4) Create a function to test the Q Network's performance on the environment.
-    # (5) Create a function for Experience Replay.
+    
 
     def __init__(self, environment_name, render=False):
 
@@ -192,30 +170,27 @@ class DQN_Agent():
         return np.argmax(q_values)
 
     def train(self):
-        # In this function, we will train our network. 
-        # If training without experience replay_memory, then you will interact with the environment 
-        # in this function, while also updating your network parameters. 
 
         
         itera = 0
         episode = 0
         decay = (0.8 - 0.1)/300000
-        epsilon= 0.8#1#0.5
+        epsilon= 0.8
         flag = 0
         perform_cross_time=[]
         max_one = 0.0
                 
-        old_Model = QNetwork(self.environment_name)#keras.models.clone_model(self.QNet.model)
+        old_Model = QNetwork(self.environment_name)
         old_Model2 = QNetwork(self.environment_name)
-        model_list = [1,1]#[old_model, curr_model]
+        model_list = [1,1]
         model_list2 = [1,1]
         average_reward_episode = []
         average_step = []
         average_loss = []
         BATCH_num = MINIBATCH 
         
-        inputs = np.zeros((BATCH_num, input_dim,input_dim,4)) # matrix of (batch, state_dim)
-        targets = np.zeros((inputs.shape[0], self.Num_output)) #matrix of (batch, action_dim)
+        inputs = np.zeros((BATCH_num, input_dim,input_dim,4)) 
+        targets = np.zeros((inputs.shape[0], self.Num_output)) 
         action_cont = 0
         MM = Targ_Update
         
@@ -252,7 +227,7 @@ class DQN_Agent():
                 break
             
             
-            while True:#each step
+            while True:
                 
                 action_cont += 1
                 nextstate, reward, is_terminal, debug_info = self.env.step(cur_action)
@@ -316,7 +291,7 @@ class DQN_Agent():
                             model_list.append(1)
                         
                             
-                            if len(model_list)>Targ_Update-1:#1000#250
+                            if len(model_list)>Targ_Update-1:
                             
                                 old_Model.model.set_weights(self.QNet.model.get_weights())
                                 model_list = []
@@ -366,7 +341,7 @@ class DQN_Agent():
                     else:
                         
                         pass
-                        #cur_action = self.env.action_space.sample()
+                        
                     
                 
                 
@@ -538,7 +513,6 @@ class DQN_Agent():
             
 
             while True:
-                #itera += 1
                 
                 action_cont += 1
                 nextstate2, reward2, is_terminal2, debug_info2 = self.env.step(cur_action2)#S'
@@ -576,9 +550,8 @@ class DQN_Agent():
                     
                 
                 total_reward2 += discount2 * reward2
-                #discount *= gamma
                 num_steps2 += 1
-                #print(num_steps2)
+                
 
             print(total_reward2)
             average_reward_episode2.append(total_reward2)
@@ -601,7 +574,6 @@ class DQN_Agent():
         
     
     def burn_in_memory(self):
-        # Initialize your replay memory with a burn_in number of episodes / transitions. 
         
         num_transition = 0
         print(self.replay_memory.burn_in)
@@ -647,8 +619,8 @@ class DQN_Agent():
                         state_buff = state_buff[1:]
                     
                     
-                    if True:#action_cont %4 == 0:
-                        cur_action = self.env.action_space.sample()#take new action for next step
+                    if True:
+                        cur_action = self.env.action_space.sample()
                         
                 
                 
@@ -663,7 +635,6 @@ class DQN_Agent():
             
         
     def burn_in_memory2(self):
-        # Initialize your replay memory with a burn_in number of episodes / transitions. 
         
         model_file = 'save/SpaceInvaders-burnin.h5'
         self.QNet.load_model(model_file)
@@ -801,13 +772,9 @@ def main(args):
 
     args = parse_arguments()
     environment_name = args.env
-    # Setting the session to allow growth, so it doesn't allocate all GPU memory. 
     gpu_ops = tf.GPUOptions(allow_growth=True)
     config = tf.ConfigProto(gpu_options=gpu_ops)
     sess = tf.Session(config=config)
-    #sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
-    
-    # Setting this as the default tensorflow session. 
     keras.backend.tensorflow_backend.set_session(sess)
     
     
@@ -826,7 +793,6 @@ def main(args):
     
     
 
-    # You want to create an instance of the DQN_Agent class here, and then train / test it. 
 
 if __name__ == '__main__':
     main(sys.argv)
