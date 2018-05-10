@@ -4,7 +4,7 @@ I implemented a convolutional neural network that repeats the one designed in th
 
 I find it necessary to implement a Target Q Network (as in the double Q learningpaper [Deep Reinforcement Learning with Double Q-learning](https://arxiv.org/abs/1509.06461)) to stabilize training of the networks.
 
-The agent can be trained to achieve 500+ scores in testing episodes
+The agent can be trained to achieve 300+ scores in testing episodes. Best post-trained agent can achieve 500+ on average. But further modificaiton is needen to reduce variation during training.
 
 To run the training, execute:
 
